@@ -1,22 +1,22 @@
 {
   "name": "Contenedores App",
   "short_name": "Contenedores",
-  "start_url": "/contenedores-app/",
+  "start_url": "/contenedores-app/index.html",
+  "scope": "/contenedores-app/",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#000000",
+  "theme_color": "#1976d2",
+  "description": "Aplicación web de contenedores",
   "icons": [
     {
-      "src": "/contenedores-app/icons/icon-192x192.png",
+      "src": "/contenedores-app/icon-192x192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
     },
     {
-      "src": "/contenedores-app/icons/icon-512x512.png",
+      "src": "/contenedores-app/icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
     }
   ],
   "screenshots": [
@@ -32,7 +32,5 @@
       "type": "image/png",
       "form_factor": "wide"
     }
-  ],
-  "id": "/contenedores-app/"
+  ]
 }
-
