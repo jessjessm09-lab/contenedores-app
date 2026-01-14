@@ -1,7 +1,8 @@
 {
   "name": "Contenedores App",
   "short_name": "Contenedores",
-  "start_url": "/contenedores-app",
+  "start_url": "/contenedores-app/index.html",
+  "scope": "/contenedores-app/",
   "display": "standalone",
   "icons": [
     {
@@ -16,4 +17,5 @@
     }
   ]
 }
+
 
