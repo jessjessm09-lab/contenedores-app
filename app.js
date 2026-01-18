@@ -454,19 +454,17 @@ const SistemaContenedores = () => {
     }
   };
 
-  // FUNCIÓN EXPORTAR EXCEL MODIFICADA
-  const exportarExcel = () => {
-    const registrosCompletos = registros.filter(r => r.estado === 'COMPLETADO');
+ const exportarExcel = () => {
+    // CAMBIO: Incluir TODOS los registros, no solo completados
+    let datosExportar = registros;
     
-    if (registrosCompletos.length === 0) {
-      mostrarMensaje('No hay viajes completados para exportar', 'error');
+    if (registros.length === 0) {
+      mostrarMensaje('No hay registros para exportar', 'error');
       return;
     }
-
-    let datosExportar = registrosCompletos;
     
     if (filtroMes) {
-      datosExportar = registrosCompletos.filter(r => {
+      datosExportar = registros.filter(r => {
         const fechaRegistro = new Date(r.fecha_entrega);
         const [year, month] = filtroMes.split('-');
         return fechaRegistro.getFullYear() === parseInt(year) && 
@@ -490,6 +488,7 @@ const SistemaContenedores = () => {
             .numero { text-align: center; }
             .total { background-color: #E7E6E6; font-weight: bold; }
             .sector-header { background-color: #FFC000; font-weight: bold; }
+            .pendiente { background-color: #FFF9C4; }
           </style>
         </head>
         <body>
@@ -525,32 +524,56 @@ const SistemaContenedores = () => {
 
     datosExportar.forEach(r => {
       const fechaEntrega = new Date(r.fecha_entrega);
-      const fechaRetiro = new Date(r.fecha_retiro);
-      // CAMBIO: Usamos interno_retiro si existe, sino usamos interno
       const internoRetiro = r.interno_retiro || r.interno || '1';
       
-      htmlContent += `
-        <tr>
-          <td>${r.sector}</td>
-          <td>${r.lugar}</td>
-          <td class="numero">${r.contenedor}</td>
-          <td>GIRSU</td>
-          <td>${r.chofer}</td>
-          <td class="numero">${r.interno || '1'}</td>
-          <td class="numero">${fechaEntrega.toLocaleDateString('es-AR')}</td>
-          <td class="numero">${fechaEntrega.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' })}</td>
-          <td class="numero">${internoRetiro}</td>
-          <td>${r.chofer_retiro}</td>
-          <td class="numero">${fechaRetiro.toLocaleDateString('es-AR')}</td>
-          <td class="numero">${fechaRetiro.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' })}</td>
-          <td class="numero">${r.kilos}</td>
-          <td class="numero">${r.dias}</td>
-        </tr>
-      `;
+      // Si está completado, mostramos todos los datos
+      if (r.estado === 'COMPLETADO') {
+        const fechaRetiro = new Date(r.fecha_retiro);
+        htmlContent += `
+          <tr>
+            <td>${r.sector}</td>
+            <td>${r.lugar}</td>
+            <td class="numero">${r.contenedor}</td>
+            <td>GIRSU</td>
+            <td>${r.chofer}</td>
+            <td class="numero">${r.interno || '1'}</td>
+            <td class="numero">${fechaEntrega.toLocaleDateString('es-AR')}</td>
+            <td class="numero">${fechaEntrega.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' })}</td>
+            <td class="numero">${internoRetiro}</td>
+            <td>${r.chofer_retiro}</td>
+            <td class="numero">${fechaRetiro.toLocaleDateString('es-AR')}</td>
+            <td class="numero">${fechaRetiro.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' })}</td>
+            <td class="numero">${r.kilos}</td>
+            <td class="numero">${r.dias}</td>
+          </tr>
+        `;
+      } else {
+        // Si está pendiente, mostramos solo los datos de entrega
+        htmlContent += `
+          <tr class="pendiente">
+            <td>${r.sector}</td>
+            <td>${r.lugar}</td>
+            <td class="numero">${r.contenedor}</td>
+            <td>GIRSU</td>
+            <td>${r.chofer}</td>
+            <td class="numero">${r.interno || '1'}</td>
+            <td class="numero">${fechaEntrega.toLocaleDateString('es-AR')}</td>
+            <td class="numero">${fechaEntrega.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' })}</td>
+            <td class="numero"></td>
+            <td></td>
+            <td class="numero"></td>
+            <td class="numero"></td>
+            <td class="numero"></td>
+            <td class="numero"></td>
+          </tr>
+        `;
+      }
     });
 
-    const totalKilos = datosExportar.reduce((sum, r) => sum + r.kilos, 0);
-    const totalViajes = datosExportar.length;
+    // Calcular totales solo con los completados
+    const registrosCompletos = datosExportar.filter(r => r.estado === 'COMPLETADO');
+    const totalKilos = registrosCompletos.reduce((sum, r) => sum + r.kilos, 0);
+    const totalViajes = registrosCompletos.length;
     const totalViajesDobles = totalViajes * 2;
 
     htmlContent += `
@@ -569,7 +592,7 @@ const SistemaContenedores = () => {
     `;
 
     const porSector = {};
-    datosExportar.forEach(r => {
+    registrosCompletos.forEach(r => {
       if (!porSector[r.sector]) {
         porSector[r.sector] = { viajes: 0, kilos: 0 };
       }
@@ -610,7 +633,6 @@ const SistemaContenedores = () => {
     
     mostrarMensaje('Excel descargado correctamente', 'exito');
   };
-
   const calcularTotales = () => {
     let datosFiltrados = registros.filter(r => r.estado === 'COMPLETADO');
     
