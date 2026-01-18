@@ -456,7 +456,10 @@ const SistemaContenedores = () => {
 
 const exportarExcel = () => {
   // CAMBIO: Incluir TODOS los registros, no solo completados
-  let datosExportar = registros; // Ya vienen ordenados por fecha_entrega desc
+  // Ordenar del más antiguo al más reciente por fecha de entrega
+  let datosExportar = [...registros].sort((a, b) => {
+    return new Date(a.fecha_entrega) - new Date(b.fecha_entrega);
+  });
   
   if (datosExportar.length === 0) {
     mostrarMensaje('No hay registros para exportar', 'error');
