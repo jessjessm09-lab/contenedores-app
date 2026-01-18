@@ -219,7 +219,7 @@ const SistemaContenedores = () => {
       query = query.eq('user_id', user.id);
     }
     
-    const { data, error } = await query.order('created_at', { ascending: false });
+    const { data, error } = await query.order('fecha_entrega', { ascending: false });
     
     if (data) {
       setRegistros(data);
@@ -455,15 +455,13 @@ const SistemaContenedores = () => {
   };
 
 const exportarExcel = () => {
-    // CAMBIO: Incluir TODOS los registros, no solo completados
-    let datosExportar = [...registros].sort((a, b) => {
-      return new Date(b.fecha_entrega) - new Date(a.fecha_entrega);
-    });
-    
-    if (datosExportar.length === 0) {
-      mostrarMensaje('No hay registros para exportar', 'error');
-      return;
-    }
+  // CAMBIO: Incluir TODOS los registros, no solo completados
+  let datosExportar = registros; // Ya vienen ordenados por fecha_entrega desc
+  
+  if (datosExportar.length === 0) {
+    mostrarMensaje('No hay registros para exportar', 'error');
+    return;
+  }
     
     if (filtroMes) {
       datosExportar = datosExportar.filter(r => {
