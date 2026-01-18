@@ -454,17 +454,19 @@ const SistemaContenedores = () => {
     }
   };
 
- const exportarExcel = () => {
+const exportarExcel = () => {
     // CAMBIO: Incluir TODOS los registros, no solo completados
-    let datosExportar = registros;
+    let datosExportar = [...registros].sort((a, b) => {
+      return new Date(b.fecha_entrega) - new Date(a.fecha_entrega);
+    });
     
-    if (registros.length === 0) {
+    if (datosExportar.length === 0) {
       mostrarMensaje('No hay registros para exportar', 'error');
       return;
     }
     
     if (filtroMes) {
-      datosExportar = registros.filter(r => {
+      datosExportar = datosExportar.filter(r => {
         const fechaRegistro = new Date(r.fecha_entrega);
         const [year, month] = filtroMes.split('-');
         return fechaRegistro.getFullYear() === parseInt(year) && 
