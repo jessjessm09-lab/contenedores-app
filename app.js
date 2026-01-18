@@ -219,7 +219,7 @@ const SistemaContenedores = () => {
       query = query.eq('user_id', user.id);
     }
     
-    const { data, error } = await query.order('fecha_entrega', { ascending: false });
+   const { data, error } = await query.order('fecha_entrega', { ascending: true });
     
     if (data) {
       setRegistros(data);
