@@ -128,13 +128,14 @@ const SistemaContenedores = () => {
     };
   }, []);
 
-  useEffect(() => {
+useEffect(() => {
     if (user && userProfile) {
       cargarDatos();
       cargarInternos();
+      cargarChoferes();
+      cargarSectoresLugares();
     }
   }, [user, userProfile]);
-
   const checkUser = async () => {
     const { data: { session } } = await supabase.auth.getSession();
     setUser(session?.user || null);
@@ -234,6 +235,37 @@ const SistemaContenedores = () => {
     
     if (data) {
       setInternos(data.map(i => i.numero));
+    }
+  };
+
+  // NUEVAS FUNCIONES - AGREGAR DESPUÉS DE cargarInternos
+  const cargarChoferes = async () => {
+    const { data, error } = await supabase
+      .from('choferes')
+      .select('*')
+      .order('nombre', { ascending: true });
+    
+    if (data) {
+      setChoferes(data.map(c => c.nombre));
+    }
+  };
+
+  const cargarSectoresLugares = async () => {
+    const { data, error } = await supabase
+      .from('sectores_lugares')
+      .select('*')
+      .order('municipio', { ascending: true });
+    
+    if (data) {
+      // Agrupar por municipio
+      const agrupados = {};
+      data.forEach(item => {
+        if (!agrupados[item.municipio]) {
+          agrupados[item.municipio] = [];
+        }
+        agrupados[item.municipio].push(item.sector);
+      });
+      setSectoresLugares(agrupados);
     }
   };
 
@@ -360,23 +392,38 @@ const SistemaContenedores = () => {
     await cargarDatos();
     mostrarMensaje('Registro eliminado', 'exito');
   };
-  const agregarChofer = () => {
-    if (nuevoChofer.trim()) {
-      const nuevosChoferes = [...choferes, nuevoChofer.trim().toUpperCase()];
-      setChoferes(nuevosChoferes);
-      localStorage.setItem('choferes', JSON.stringify(nuevosChoferes));
-      setNuevoChofer('');
-      mostrarMensaje('Chofer agregado correctamente', 'exito');
+ const agregarChofer = async () => {
+    if (!nuevoChofer.trim()) return;
+
+    const { error } = await supabase
+      .from('choferes')
+      .insert([{ nombre: nuevoChofer.trim().toUpperCase() }]);
+
+    if (error) {
+      mostrarMensaje('Error al agregar chofer: ' + error.message, 'error');
+      return;
     }
+
+    await cargarChoferes();
+    setNuevoChofer('');
+    mostrarMensaje('Chofer agregado correctamente', 'exito');
   };
 
-  const eliminarChofer = (chofer) => {
-    if (confirm(`¿Está seguro de eliminar al chofer ${chofer}?`)) {
-      const nuevosChoferes = choferes.filter(c => c !== chofer);
-      setChoferes(nuevosChoferes);
-      localStorage.setItem('choferes', JSON.stringify(nuevosChoferes));
-      mostrarMensaje('Chofer eliminado', 'exito');
+ const eliminarChofer = async (chofer) => {
+    if (!confirm(`¿Está seguro de eliminar al chofer ${chofer}?`)) return;
+
+    const { error } = await supabase
+      .from('choferes')
+      .delete()
+      .eq('nombre', chofer);
+
+    if (error) {
+      mostrarMensaje('Error al eliminar chofer: ' + error.message, 'error');
+      return;
     }
+
+    await cargarChoferes();
+    mostrarMensaje('Chofer eliminado', 'exito');
   };
 
   const agregarInterno = async () => {
@@ -413,45 +460,79 @@ const SistemaContenedores = () => {
     mostrarMensaje('Interno eliminado', 'exito');
   };
 
-  const agregarSector = () => {
-    if (nuevoSector.trim()) {
-      const nuevosSectores = { ...sectoresLugares, [nuevoSector.trim().toUpperCase()]: [] };
-      setSectoresLugares(nuevosSectores);
-      localStorage.setItem('sectoresLugares', JSON.stringify(nuevosSectores));
-      setNuevoSector('');
-      mostrarMensaje('Municipio agregado correctamente', 'exito');
+ const agregarSector = async () => {
+    if (!nuevoSector.trim()) return;
+
+    // Crear el municipio sin sectores inicialmente
+    const municipioNuevo = nuevoSector.trim().toUpperCase();
+    
+    // Verificar si ya existe
+    const municipiosExistentes = Object.keys(sectoresLugares);
+    if (municipiosExistentes.includes(municipioNuevo)) {
+      mostrarMensaje('El municipio ya existe', 'error');
+      return;
     }
+
+    // Agregar municipio vacío localmente
+    const nuevosSectores = { ...sectoresLugares, [municipioNuevo]: [] };
+    setSectoresLugares(nuevosSectores);
+    setNuevoSector('');
+    mostrarMensaje('Municipio agregado correctamente', 'exito');
   };
 
-  const eliminarSector = (sector) => {
-    if (confirm(`¿Está seguro de eliminar el municipio ${sector}?`)) {
-      const nuevosSectores = { ...sectoresLugares };
-      delete nuevosSectores[sector];
-      setSectoresLugares(nuevosSectores);
-      localStorage.setItem('sectoresLugares', JSON.stringify(nuevosSectores));
-      mostrarMensaje('Municipio eliminado', 'exito');
+  const eliminarSector = async (sector) => {
+    if (!confirm(`¿Está seguro de eliminar el municipio ${sector} y todos sus sectores?`)) return;
+
+    // Eliminar todos los sectores de este municipio
+    const { error } = await supabase
+      .from('sectores_lugares')
+      .delete()
+      .eq('municipio', sector);
+
+    if (error) {
+      mostrarMensaje('Error al eliminar municipio: ' + error.message, 'error');
+      return;
     }
+
+    await cargarSectoresLugares();
+    mostrarMensaje('Municipio eliminado', 'exito');
+  };
+ const agregarLugar = async () => {
+    if (!sectorParaLugar || !nuevoLugar.trim()) return;
+
+    const { error } = await supabase
+      .from('sectores_lugares')
+      .insert([{ 
+        municipio: sectorParaLugar, 
+        sector: nuevoLugar.trim().toUpperCase() 
+      }]);
+
+    if (error) {
+      mostrarMensaje('Error al agregar sector: ' + error.message, 'error');
+      return;
+    }
+
+    await cargarSectoresLugares();
+    setNuevoLugar('');
+    mostrarMensaje('Sector agregado correctamente', 'exito');
   };
 
-  const agregarLugar = () => {
-    if (sectorParaLugar && nuevoLugar.trim()) {
-      const nuevosSectores = { ...sectoresLugares };
-      nuevosSectores[sectorParaLugar] = [...nuevosSectores[sectorParaLugar], nuevoLugar.trim().toUpperCase()];
-      setSectoresLugares(nuevosSectores);
-      localStorage.setItem('sectoresLugares', JSON.stringify(nuevosSectores));
-      setNuevoLugar('');
-      mostrarMensaje('Sector agregado correctamente', 'exito');
-    }
-  };
+ const eliminarLugar = async (municipio, lugar) => {
+    if (!confirm(`¿Está seguro de eliminar el sector ${lugar}?`)) return;
 
-  const eliminarLugar = (sector, lugar) => {
-    if (confirm(`¿Está seguro de eliminar el sector ${lugar}?`)) {
-      const nuevosSectores = { ...sectoresLugares };
-      nuevosSectores[sector] = nuevosSectores[sector].filter(l => l !== lugar);
-      setSectoresLugares(nuevosSectores);
-      localStorage.setItem('sectoresLugares', JSON.stringify(nuevosSectores));
-      mostrarMensaje('Sector eliminado', 'exito');
+    const { error } = await supabase
+      .from('sectores_lugares')
+      .delete()
+      .eq('municipio', municipio)
+      .eq('sector', lugar);
+
+    if (error) {
+      mostrarMensaje('Error al eliminar sector: ' + error.message, 'error');
+      return;
     }
+
+    await cargarSectoresLugares();
+    mostrarMensaje('Sector eliminado', 'exito');
   };
 
 const exportarExcel = () => {
