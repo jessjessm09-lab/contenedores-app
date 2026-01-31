@@ -903,7 +903,7 @@ const exportarExcel = () => {
 {modo === 'chofer' && (
           <div className="space-y-6">
             <div className="bg-white rounded-lg shadow-lg p-6">
-            <h2 className="text-2xl font-bold text-gray-800 mb-6">Registrar Viaje</h2>
+              <h2 className="text-2xl font-bold text-gray-800 mb-6">Registrar Viaje</h2>
               
               <div className="space-y-6">
               
@@ -1186,7 +1186,9 @@ const exportarExcel = () => {
                   </button>
                 </div>
               </div>
+              </div>
             </div>
+
             <div className="bg-white rounded-lg shadow-lg p-6">
               <h3 className="text-xl font-bold text-gray-800 mb-4">Contenedores Pendientes de Retiro</h3>
               <div className="space-y-2">
@@ -1212,7 +1214,7 @@ const exportarExcel = () => {
               </div>
             </div>
           </div>
-       )}
+        )}
 
         {modo === 'admin' && userProfile?.rol === 'admin' && (
           <div className="space-y-6">
