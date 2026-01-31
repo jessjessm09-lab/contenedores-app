@@ -903,181 +903,287 @@ const exportarExcel = () => {
 {modo === 'chofer' && (
           <div className="space-y-6">
             <div className="bg-white rounded-lg shadow-lg p-6">
-              <h2 className="text-2xl font-bold text-gray-800 mb-6">Registrar Viaje</h2>
+            <h2 className="text-2xl font-bold text-gray-800 mb-6">Registrar Viaje</h2>
               
-              <div className="space-y-4">
-                {userProfile?.rol === 'admin' ? (
+              {/* PRIMERO: FORMULARIO DE RETIRO */}
+              <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
+                <h3 className="text-xl font-bold text-green-700 mb-4">RETIRO DE CONTENEDOR</h3>
+                
+                <div className="space-y-4">
+                  {userProfile?.rol === 'admin' ? (
+                    <div>
+                      <label className="block text-gray-700 font-semibold mb-2">
+                        Nombre del Chofer
+                      </label>
+                      <select
+                        value={choferActual}
+                        onChange={(e) => setChoferActual(e.target.value)}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      >
+                        <option value="">Seleccione un chofer</option>
+                        {choferes.map((chofer, idx) => (
+                          <option key={idx} value={chofer}>{chofer}</option>
+                        ))}
+                      </select>
+                    </div>
+                  ) : (
+                    <div>
+                      <label className="block text-gray-700 font-semibold mb-2">
+                        Chofer
+                      </label>
+                      <div className="w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-lg">
+                        {choferActual}
+                      </div>
+                    </div>
+                  )}
+
                   <div>
                     <label className="block text-gray-700 font-semibold mb-2">
-                      Nombre del Chofer
+                      Municipio
                     </label>
                     <select
-                      value={choferActual}
-                      onChange={(e) => setChoferActual(e.target.value)}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      value={sectorSeleccionado}
+                      onChange={(e) => {
+                        setSectorSeleccionado(e.target.value);
+                        setLugarSeleccionado('');
+                      }}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
                     >
-                      <option value="">Seleccione un chofer</option>
-                      {choferes.map((chofer, idx) => (
-                        <option key={idx} value={chofer}>{chofer}</option>
+                      <option value="">Seleccione un municipio</option>
+                      {Object.keys(sectoresLugares).map((sector) => (
+                        <option key={sector} value={sector}>{sector}</option>
                       ))}
                     </select>
                   </div>
-                ) : (
-                  <div>
-                    <label className="block text-gray-700 font-semibold mb-2">
-                      Chofer
-                    </label>
-                    <div className="w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-lg">
-                      {choferActual}
+
+                  {sectorSeleccionado && (
+                    <div>
+                      <label className="block text-gray-700 font-semibold mb-2">
+                        Sector
+                      </label>
+                      <select
+                        value={lugarSeleccionado}
+                        onChange={(e) => setLugarSeleccionado(e.target.value)}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      >
+                        <option value="">Seleccione un sector</option>
+                        {lugaresPorSector.map((lugar, idx) => (
+                          <option key={idx} value={lugar}>{lugar}</option>
+                        ))}
+                      </select>
                     </div>
-                  </div>
-                )}
+                  )}
 
-                <div>
-                  <label className="block text-gray-700 font-semibold mb-2">
-                    Municipio
-                  </label>
-                  <select
-                    value={sectorSeleccionado}
-                    onChange={(e) => {
-                      setSectorSeleccionado(e.target.value);
-                      setLugarSeleccionado('');
-                    }}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  >
-                    <option value="">Seleccione un municipio</option>
-                    {Object.keys(sectoresLugares).map((sector) => (
-                      <option key={sector} value={sector}>{sector}</option>
-                    ))}
-                  </select>
-                </div>
-
-                {sectorSeleccionado && (
                   <div>
                     <label className="block text-gray-700 font-semibold mb-2">
-                      Sector
+                      Número de Contenedor
+                    </label>
+                    <input
+                      type="text"
+                      value={numContenedor}
+                      onChange={(e) => setNumContenedor(e.target.value)}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      placeholder="Ej: 18, 23, etc."
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-gray-700 font-semibold mb-2">
+                      Kilos
+                    </label>
+                    <input
+                      type="number"
+                      step="0.01"
+                      value={kilos}
+                      onChange={(e) => setKilos(e.target.value)}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      placeholder="Ingrese los kilos"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-gray-700 font-semibold mb-2">
+                      Interno para RETIRO
                     </label>
                     <select
-                      value={lugarSeleccionado}
-                      onChange={(e) => setLugarSeleccionado(e.target.value)}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      value={internoRetiroSeleccionado}
+                      onChange={(e) => setInternoRetiroSeleccionado(e.target.value)}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
                     >
-                      <option value="">Seleccione un sector</option>
-                      {lugaresPorSector.map((lugar, idx) => (
-                        <option key={idx} value={lugar}>{lugar}</option>
+                      <option value="">Seleccione un interno</option>
+                      {internos.map((interno, idx) => (
+                        <option key={idx} value={interno}>{interno}</option>
                       ))}
                     </select>
                   </div>
-                )}
 
-                <div>
-                  <label className="block text-gray-700 font-semibold mb-2">
-                    Número de Contenedor
-                  </label>
-                  <input
-                    type="text"
-                    value={numContenedor}
-                    onChange={(e) => setNumContenedor(e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="Ej: 18, 23, etc."
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-gray-700 font-semibold mb-2">
-                    Interno para ENTREGA
-                  </label>
-                  <select
-                    value={internoSeleccionado}
-                    onChange={(e) => setInternoSeleccionado(e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  >
-                    <option value="">Seleccione un interno</option>
-                    {internos.map((interno, idx) => (
-                      <option key={idx} value={interno}>{interno}</option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="bg-blue-50 p-4 rounded-lg">
-                  <p className="text-sm font-semibold text-gray-700 mb-3">Fecha y Hora de Entrega (Opcional)</p>
-                  <p className="text-xs text-gray-600 mb-2">Si no selecciona, se usará la fecha y hora actual</p>
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="block text-xs text-gray-600 mb-1">Fecha</label>
-                      <input
-                        type="date"
-                        value={fechaEntregaManual}
-                        onChange={(e) => setFechaEntregaManual(e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs text-gray-600 mb-1">Hora</label>
-                      <input
-                        type="time"
-                        value={horaEntregaManual}
-                        onChange={(e) => setHoraEntregaManual(e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                      />
+                  <div className="bg-green-50 p-4 rounded-lg">
+                    <p className="text-sm font-semibold text-gray-700 mb-3">Fecha y Hora de Retiro (Opcional)</p>
+                    <p className="text-xs text-gray-600 mb-2">Si no selecciona, se usará la fecha y hora actual</p>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-xs text-gray-600 mb-1">Fecha</label>
+                        <input
+                          type="date"
+                          value={fechaRetiroManual}
+                          onChange={(e) => setFechaRetiroManual(e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs text-gray-600 mb-1">Hora</label>
+                        <input
+                          type="time"
+                          value={horaRetiroManual}
+                          onChange={(e) => setHoraRetiroManual(e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                        />
+                      </div>
                     </div>
                   </div>
+
+                  <button
+                    onClick={registrarRetiro}
+                    className="w-full bg-green-600 text-white py-4 rounded-lg font-bold text-lg hover:bg-green-700 transition-colors flex items-center justify-center gap-2"
+                  >
+                    <ArrowRight size={24} />
+                    Registrar RETIRO
+                  </button>
                 </div>
               </div>
-            </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              {/* RETIRO - AHORA A LA IZQUIERDA */}
-              <div className="bg-white rounded-lg shadow-lg p-4">
-                <h3 className="text-xl font-bold text-gray-800 mb-4">Registrar RETIRO</h3>
+              {/* SEGUNDO: FORMULARIO DE ENTREGA */}
+              <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
+                <h3 className="text-xl font-bold text-blue-700 mb-4">ENTREGA DE CONTENEDOR</h3>
                 
-                <label className="block text-gray-700 font-semibold mb-2 text-sm">
-                  Kilos
-                </label>
-                <input
-                  type="number"
-                  step="0.01"
-                  value={kilos}
-                  onChange={(e) => setKilos(e.target.value)}
-                  className="w-full px-4 py-2 mb-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                  placeholder="Ingrese los kilos"
-                />
-                
-                <label className="block text-gray-700 font-semibold mb-2 text-sm">
-                  Interno para RETIRO
-                </label>
-                <select
-                  value={internoRetiroSeleccionado}
-                  onChange={(e) => setInternoRetiroSeleccionado(e.target.value)}
-                  className="w-full px-4 py-2 mb-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                >
-                  <option value="">Seleccione un interno</option>
-                  {internos.map((interno, idx) => (
-                    <option key={idx} value={interno}>{interno}</option>
-                  ))}
-                </select>
-                
-                <div className="bg-green-50 p-3 rounded-lg mb-3">
-                  <p className="text-xs font-semibold text-gray-700 mb-2">Fecha y Hora de Retiro (Opcional)</p>
-                  <div className="grid grid-cols-2 gap-2">
+                <div className="space-y-4">
+                  {userProfile?.rol === 'admin' ? (
                     <div>
-                      <input
-                        type="date"
-                        value={fechaRetiroManual}
-                        onChange={(e) => setFechaRetiroManual(e.target.value)}
-                        className="w-full px-2 py-1 text-xs border border-gray-300 rounded focus:ring-2 focus:ring-green-500"
-                      />
+                      <label className="block text-gray-700 font-semibold mb-2">
+                        Nombre del Chofer
+                      </label>
+                      <select
+                        value={choferActual}
+                        onChange={(e) => setChoferActual(e.target.value)}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      >
+                        <option value="">Seleccione un chofer</option>
+                        {choferes.map((chofer, idx) => (
+                          <option key={idx} value={chofer}>{chofer}</option>
+                        ))}
+                      </select>
                     </div>
+                  ) : (
                     <div>
-                      <input
-                        type="time"
-                        value={horaRetiroManual}
-                        onChange={(e) => setHoraRetiroManual(e.target.value)}
-                        className="w-full px-2 py-1 text-xs border border-gray-300 rounded focus:ring-2 focus:ring-green-500"
-                      />
+                      <label className="block text-gray-700 font-semibold mb-2">
+                        Chofer
+                      </label>
+                      <div className="w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-lg">
+                        {choferActual}
+                      </div>
+                    </div>
+                  )}
+
+                  <div>
+                    <label className="block text-gray-700 font-semibold mb-2">
+                      Municipio
+                    </label>
+                    <select
+                      value={sectorSeleccionado}
+                      onChange={(e) => {
+                        setSectorSeleccionado(e.target.value);
+                        setLugarSeleccionado('');
+                      }}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    >
+                      <option value="">Seleccione un municipio</option>
+                      {Object.keys(sectoresLugares).map((sector) => (
+                        <option key={sector} value={sector}>{sector}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {sectorSeleccionado && (
+                    <div>
+                      <label className="block text-gray-700 font-semibold mb-2">
+                        Sector
+                      </label>
+                      <select
+                        value={lugarSeleccionado}
+                        onChange={(e) => setLugarSeleccionado(e.target.value)}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      >
+                        <option value="">Seleccione un sector</option>
+                        {lugaresPorSector.map((lugar, idx) => (
+                          <option key={idx} value={lugar}>{lugar}</option>
+                        ))}
+                      </select>
+                    </div>
+                  )}
+
+                  <div>
+                    <label className="block text-gray-700 font-semibold mb-2">
+                      Número de Contenedor
+                    </label>
+                    <input
+                      type="text"
+                      value={numContenedor}
+                      onChange={(e) => setNumContenedor(e.target.value)}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      placeholder="Ej: 18, 23, etc."
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-gray-700 font-semibold mb-2">
+                      Interno para ENTREGA
+                    </label>
+                    <select
+                      value={internoSeleccionado}
+                      onChange={(e) => setInternoSeleccionado(e.target.value)}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    >
+                      <option value="">Seleccione un interno</option>
+                      {internos.map((interno, idx) => (
+                        <option key={idx} value={interno}>{interno}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="bg-blue-50 p-4 rounded-lg">
+                    <p className="text-sm font-semibold text-gray-700 mb-3">Fecha y Hora de Entrega (Opcional)</p>
+                    <p className="text-xs text-gray-600 mb-2">Si no selecciona, se usará la fecha y hora actual</p>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-xs text-gray-600 mb-1">Fecha</label>
+                        <input
+                          type="date"
+                          value={fechaEntregaManual}
+                          onChange={(e) => setFechaEntregaManual(e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs text-gray-600 mb-1">Hora</label>
+                        <input
+                          type="time"
+                          value={horaEntregaManual}
+                          onChange={(e) => setHoraEntregaManual(e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                        />
+                      </div>
                     </div>
                   </div>
+
+                  <button
+                    onClick={registrarEntrega}
+                    className="w-full bg-blue-600 text-white py-4 rounded-lg font-bold text-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
+                  >
+                    <Save size={24} />
+                    Registrar ENTREGA
+                  </button>
                 </div>
+              </div>
                 
                 <button
                   onClick={registrarRetiro}
