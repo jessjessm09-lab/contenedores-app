@@ -904,10 +904,11 @@ const exportarExcel = () => {
           <div className="space-y-6">
             <div className="bg-white rounded-lg shadow-lg p-6">
             <h2 className="text-2xl font-bold text-gray-800 mb-6">Registrar Viaje</h2>
-            <div className="space-y-6">
+              
+              <div className="space-y-6">
               
               {/* PRIMERO: FORMULARIO DE RETIRO */}
-              <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
+              <div className="bg-white rounded-lg shadow-lg p-6">
                 <h3 className="text-xl font-bold text-green-700 mb-4">RETIRO DE CONTENEDOR</h3>
                 
                 <div className="space-y-4">
@@ -1054,7 +1055,7 @@ const exportarExcel = () => {
               </div>
 
               {/* SEGUNDO: FORMULARIO DE ENTREGA */}
-              <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
+              <div className="bg-white rounded-lg shadow-lg p-6">
                 <h3 className="text-xl font-bold text-blue-700 mb-4">ENTREGA DE CONTENEDOR</h3>
                 
                 <div className="space-y-4">
@@ -1176,39 +1177,16 @@ const exportarExcel = () => {
                     </div>
                   </div>
 
-                 <button
-                  onClick={registrarEntrega}
-                  className="w-full bg-blue-600 text-white py-4 rounded-lg font-bold text-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
-                >
-                  <Save size={24} />
-                  Registrar ENTREGA
-                </button>
+                  <button
+                    onClick={registrarEntrega}
+                    className="w-full bg-blue-600 text-white py-4 rounded-lg font-bold text-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
+                  >
+                    <Save size={24} />
+                    Registrar ENTREGA
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
-
-            <div className="bg-white rounded-lg shadow-lg p-6">
-                
-                <button
-                  onClick={registrarRetiro}
-                  className="w-full bg-green-600 text-white py-4 rounded-lg font-bold text-lg hover:bg-green-700 transition-colors flex items-center justify-center gap-2"
-                >
-                  <ArrowRight size={24} />
-                  Registrar RETIRO
-                </button>
-              </div>
-
-              {/* ENTREGA - AHORA A LA DERECHA */}
-              <button
-                onClick={registrarEntrega}
-                className="bg-blue-600 text-white py-4 rounded-lg font-bold text-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
-              >
-                <Save size={24} />
-                Registrar ENTREGA
-             </button>
-            </div>
-          </div>
-                  
             <div className="bg-white rounded-lg shadow-lg p-6">
               <h3 className="text-xl font-bold text-gray-800 mb-4">Contenedores Pendientes de Retiro</h3>
               <div className="space-y-2">
