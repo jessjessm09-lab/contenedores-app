@@ -1201,10 +1201,9 @@ const exportarExcel = () => {
               >
                 <Save size={24} />
                 Registrar ENTREGA
-              </button>
+             </button>
             </div>
-           </div>
-          </div> 
+          </div>
                   
             <div className="bg-white rounded-lg shadow-lg p-6">
               <h3 className="text-xl font-bold text-gray-800 mb-4">Contenedores Pendientes de Retiro</h3>
