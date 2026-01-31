@@ -1515,7 +1515,7 @@ const exportarExcel = () => {
           </div>
         )}
 
-        <div className="mt-6 text-center text-sm text-gray-600">
+       <div className="mt-6 text-center text-sm text-gray-600">
           <p>✓ Datos sincronizados en la nube con Supabase</p>
         </div>
       </div>
