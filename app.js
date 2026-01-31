@@ -1027,17 +1027,12 @@ const exportarExcel = () => {
             </div>
 
             <div className="grid grid-cols-2 gap-4">
-              <button
-                onClick={registrarEntrega}
-                className="bg-blue-600 text-white py-4 rounded-lg font-bold text-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
-              >
-                <Save size={24} />
-                Registrar ENTREGA
-              </button>
-
+              {/* RETIRO - AHORA A LA IZQUIERDA */}
               <div className="bg-white rounded-lg shadow-lg p-4">
+                <h3 className="text-xl font-bold text-gray-800 mb-4">Registrar RETIRO</h3>
+                
                 <label className="block text-gray-700 font-semibold mb-2 text-sm">
-                  Kilos (solo para RETIRO)
+                  Kilos
                 </label>
                 <input
                   type="number"
@@ -1086,14 +1081,22 @@ const exportarExcel = () => {
                 
                 <button
                   onClick={registrarRetiro}
-                  className="w-full bg-green-600 text-white py-3 rounded-lg font-bold hover:bg-green-700 transition-colors flex items-center justify-center gap-2"
+                  className="w-full bg-green-600 text-white py-4 rounded-lg font-bold text-lg hover:bg-green-700 transition-colors flex items-center justify-center gap-2"
                 >
-                  <ArrowRight size={20} />
+                  <ArrowRight size={24} />
                   Registrar RETIRO
                 </button>
               </div>
-            </div>
 
+              {/* ENTREGA - AHORA A LA DERECHA */}
+              <button
+                onClick={registrarEntrega}
+                className="bg-blue-600 text-white py-4 rounded-lg font-bold text-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
+              >
+                <Save size={24} />
+                Registrar ENTREGA
+              </button>
+            </div>
             <div className="bg-white rounded-lg shadow-lg p-6">
               <h3 className="text-xl font-bold text-gray-800 mb-4">Contenedores Pendientes de Retiro</h3>
               <div className="space-y-2">
