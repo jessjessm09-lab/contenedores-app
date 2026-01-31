@@ -1212,8 +1212,9 @@ const exportarExcel = () => {
               </div>
             </div>
           </div>
-        )}
-{modo === 'admin' && userProfile?.rol === 'admin' && (
+       )}
+
+        {modo === 'admin' && userProfile?.rol === 'admin' && (
           <div className="space-y-6">
             <div className="bg-white rounded-lg shadow-lg p-6">
               <div className="flex justify-between items-center mb-6">
