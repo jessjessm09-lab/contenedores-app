@@ -904,6 +904,7 @@ const exportarExcel = () => {
           <div className="space-y-6">
             <div className="bg-white rounded-lg shadow-lg p-6">
             <h2 className="text-2xl font-bold text-gray-800 mb-6">Registrar Viaje</h2>
+            <div className="space-y-6">
               
               {/* PRIMERO: FORMULARIO DE RETIRO */}
               <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
@@ -1175,15 +1176,18 @@ const exportarExcel = () => {
                     </div>
                   </div>
 
-                  <button
-                    onClick={registrarEntrega}
-                    className="w-full bg-blue-600 text-white py-4 rounded-lg font-bold text-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
-                  >
-                    <Save size={24} />
-                    Registrar ENTREGA
-                  </button>
-                </div>
+                 <button
+                  onClick={registrarEntrega}
+                  className="w-full bg-blue-600 text-white py-4 rounded-lg font-bold text-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
+                >
+                  <Save size={24} />
+                  Registrar ENTREGA
+                </button>
               </div>
+            </div>
+          </div>
+
+            <div className="bg-white rounded-lg shadow-lg p-6">
                 
                 <button
                   onClick={registrarRetiro}
